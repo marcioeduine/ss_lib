@@ -1,17 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::   ::::::::  */
-/*    ss_isspace.c                                     :+:    :+: :+:    :+:  */
+/*    ss_swap.c                                        :+:    :+: :+:    :+:  */
 /*                                                    +:+        +:+          */
 /*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
 /*                                                         +#+        +#+     */
-/*    Created: 2026/02/27 17:59:42 by Ser Superior #+#    #+# #+#    #+#      */
-/*    Updated: 2026/02/27 18:01:45 by Ser Superior ########   ########        */
+/*    Created: 2026/02/27 18:51:10 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/02/27 18:54:52 by Ser Superior ########   ########        */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "ss_lib.h"
 
-bool	ss_isspace(number c)
+void	ss_swap(generic a, generic b)
 {
-	return (c == 32 or ((c >= 9) and (c <= 13)));
+	const generic	c = a;
+
+	a = b;
+	b = c;
 }

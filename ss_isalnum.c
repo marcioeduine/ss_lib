@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    ss_isalnum.c                                     :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/02/27 17:51:19 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/02/27 17:52:09 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #include "ss_lib.h"
 
 bool	ss_isalnum(number c)
 {
-	return (ss_isalpha(c) || ss_isdigit(c));
+	return (ss_isalpha(c) or ss_isdigit(c));
 }

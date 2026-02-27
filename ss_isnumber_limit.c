@@ -1,17 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::   ::::::::  */
-/*    ss_isspace.c                                     :+:    :+: :+:    :+:  */
+/*    ss_isnumber_limit.c                              :+:    :+: :+:    :+:  */
 /*                                                    +:+        +:+          */
 /*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
 /*                                                         +#+        +#+     */
-/*    Created: 2026/02/27 17:59:42 by Ser Superior #+#    #+# #+#    #+#      */
-/*    Updated: 2026/02/27 18:01:45 by Ser Superior ########   ########        */
+/*    Created: 2026/02/27 21:43:50 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/02/27 21:50:49 by Ser Superior ########   ########        */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "ss_lib.h"
 
-bool	ss_isspace(number c)
+bool	ss_isnumber_limit(number n)
 {
-	return (c == 32 or ((c >= 9) and (c <= 13)));
+	return (n < LLONG_MIN or n > LLONG_MAX);
 }

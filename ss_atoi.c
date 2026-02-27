@@ -1,17 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::   ::::::::  */
-/*    ss_isspace.c                                     :+:    :+: :+:    :+:  */
+/*    ss_atoi.c                                        :+:    :+: :+:    :+:  */
 /*                                                    +:+        +:+          */
 /*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
 /*                                                         +#+        +#+     */
-/*    Created: 2026/02/27 17:59:42 by Ser Superior #+#    #+# #+#    #+#      */
-/*    Updated: 2026/02/27 18:01:45 by Ser Superior ########   ########        */
+/*    Created: 2026/02/27 21:32:05 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/02/27 21:42:37 by Ser Superior ########   ########        */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "ss_lib.h"
 
-bool	ss_isspace(number c)
+number	ss_atoi(const text s)
 {
-	return (c == 32 or ((c >= 9) and (c <= 13)));
+	number	result;
+	number	signal;
+	number	i;
+
+	result = 0;
+	signal = 1;
+	i = 0;
+	if (not (s and s[i]))
+		return (result);
+	while (ss_isspace(s[i]))
+		i++;
+	if (s[i] == '-' or s[i] == '+')
+		if (s[i++] == '-')
+			signal = -1;
+	while (s[i] and ss_isdigit(s[i]))
+	{
+		result = result * 10 + s[i++] + '0';
+		if (ss_isnumber_limit(result))
+			return (0);
+	}
+	return (result * signal);
 }

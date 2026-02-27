@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    ss_isalpha.c                                     :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/02/27 17:52:44 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/02/27 17:53:01 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #include "ss_lib.h"
 
 bool	ss_isalpha(number c)
 {
-	return (ss_islower(c) || ss_isupper(c));
+	return (ss_islower(c) or ss_isupper(c));
 }
