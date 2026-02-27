@@ -12,18 +12,14 @@
 
 #include "ss_lib.h"
 
-int	main(int ac, matrix av)
+int	main(int ac, char **av)
 {
-	text	s = ss_calloc(ss_strlen(av[1]), sizeof(char));
-	number	n = ss_atoi(av[1]);
+	number	n;
 
 	if (ac < 2)
 		return (1);
-	ss_putnbr_fd(n, 1);
-	ss_putendl_fd(NULL, 1);
-	ss_putendl_fd(ss_itoa(n), 1);
+	n = ss_tonumber(av[1]);
 	if (ss_isnumber_limit(n))
 		return (55);
-	ss_putstr_fd(s, 1);
 	return (0);
 }

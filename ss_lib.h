@@ -29,7 +29,7 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
-number	ss_atoi(const text s);
+number	ss_tonumber(const text s);
 number	ss_strlen(const text s);
 number	ss_world_counter(const text s);
 
@@ -41,7 +41,7 @@ bool	ss_isprint(number c);
 bool	ss_islower(number c);
 bool	ss_isupper(number c);
 bool	ss_isspace(number c);
-bool	ss_isnumber_limit(number n);
+bool	ss_isnumber_limit(double n);
 
 void	ss_putchar_fd(char c, number fd);
 void	ss_putstr_fd(const text s, number fd);
@@ -59,7 +59,7 @@ text	ss_strdup(const text s);
 text	ss_substr(const text s, number start, number length);
 text	ss_strtrim(const text s, const text charset);
 text	ss_strljoin(const text dest, const text src, number length);
-text	ss_itoa(number n);
+text	ss_totext(number n);
 
 matrix	ss_split(const text s, const text charset);
 

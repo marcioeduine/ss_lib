@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::   ::::::::  */
-/*    ss_itoa.c                                        :+:    :+: :+:    :+:  */
+/*    ss_totext.c                                      :+:    :+: :+:    :+:  */
 /*                                                    +:+        +:+          */
 /*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
 /*                                                         +#+        +#+     */
@@ -24,7 +24,7 @@ static number	ss_number_length(number n)
 	return (0);
 }
 
-text	ss_itoa(number n)
+text	ss_totext(number n)
 {
 	text	s;
 	number	length;

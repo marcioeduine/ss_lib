@@ -43,7 +43,7 @@ The library uses the following type aliases for improved readability:
 |------|------------|-------------|
 | `text` | `char *` | Pointer to a character string |
 | `matrix` | `char **` | Pointer to an array of strings (2D array) |
-| `number` | `size_t` | Unsigned integer type for sizes and counts |
+| `number` | `long long` | Unsigned integer type for sizes and counts |
 | `generic` | `void *` | Generic pointer type |
 
 ### Structures

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::   ::::::::  */
-/*    ss_atoi.c                                        :+:    :+: :+:    :+:  */
+/*    ss_tonumber.c                                    :+:    :+: :+:    :+:  */
 /*                                                    +:+        +:+          */
 /*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
 /*                                                         +#+        +#+     */
@@ -12,7 +12,7 @@
 
 #include "ss_lib.h"
 
-number	ss_atoi(const text s)
+number	ss_tonumber(const text s)
 {
 	number	result;
 	number	signal;
@@ -30,7 +30,7 @@ number	ss_atoi(const text s)
 			signal = -1;
 	while (s[i] and ss_isdigit(s[i]))
 	{
-		result = result * 10 + s[i++] + '0';
+		result = result * 10 + s[i++] - '0';
 		if (ss_isnumber_limit(result))
 			return (0);
 	}

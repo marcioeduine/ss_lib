@@ -12,7 +12,7 @@
 
 #include "ss_lib.h"
 
-bool	ss_isnumber_limit(number n)
+bool	ss_isnumber_limit(double n)
 {
-	return (n < LLONG_MIN or n > LLONG_MAX);
+	return (n < (double)LLONG_MIN or n > (double)LLONG_MAX);
 }

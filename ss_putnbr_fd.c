@@ -14,7 +14,7 @@
 void	ss_putnbr_fd(int _number, number fd)
 {
 	if (_number == INT_MIN)
-		return (ss_putstr_fd(ss_itoa(INT_MIN), fd));
+		return (ss_putstr_fd(ss_totext(INT_MIN), fd));
 	if (_number < 0)
 		return (ss_putchar_fd('-', fd), ss_putnbr_fd(-_number, fd));
 	if (_number > 9)

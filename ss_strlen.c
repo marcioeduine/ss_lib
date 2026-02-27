@@ -16,9 +16,9 @@ number	ss_strlen(const text s)
 	int	i;
 
 	i = 0;
-	if (not (*s and s))
+	if (not (s and s[i]))
 		return (i);
-	while (s + i)
+	while (s[i])
 		i++;
 	return (i);
 }
