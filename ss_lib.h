@@ -12,6 +12,8 @@
 #ifndef SS_LIB_H
 # define SS_LIB_H
 
+# define ss_swap(a, b) _ss_swap((generic *)&(a), (generic *)&(b))
+
 # include <iso646.h>
 # include <limits.h>
 # include <stdbool.h>
@@ -33,7 +35,7 @@ number	ss_tonumber(const text s);
 number	ss_strlen(const text s);
 number	ss_world_counter(const text s);
 
-bool	ss_isascii(int c);
+bool	ss_isascii(number c);
 bool	ss_isalpha(number c);
 bool	ss_isdigit(number c);
 bool	ss_isalnum(number c);
@@ -46,9 +48,9 @@ bool	ss_isnumber_limit(double n);
 void	ss_putchar_fd(char c, number fd);
 void	ss_putstr_fd(const text s, number fd);
 void	ss_putendl_fd(const text s, number fd);
-void	ss_putnbr_fd(int _number, number fd);
+void	ss_putnbr_fd(number _number, number fd);
 void	ss_free_matrix(matrix _matrix, number size);
-void	ss_swap(generic a, generic b);
+void	_ss_swap(generic *a, generic *b);
 
 generic	ss_memset(generic s, number c, number length);
 generic	ss_calloc(number member, number size);

@@ -14,7 +14,7 @@
 
 number	ss_tonumber(const text s)
 {
-	number	result;
+	double	result;
 	number	signal;
 	number	i;
 
@@ -34,5 +34,5 @@ number	ss_tonumber(const text s)
 		if (ss_isnumber_limit(result))
 			return (0);
 	}
-	return (result * signal);
+	return ((number)result * signal);
 }

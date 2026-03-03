@@ -31,7 +31,7 @@ text	ss_strljoin(const text dest, const text src, number length)
 		return (result);
 	i = ss_strlen(result);
 	j = 0;
-	while (i < length)
+	while (j < length)
 		result[i++] = src[j++];
 	return (result);
 }

@@ -16,13 +16,13 @@ text	ss_strtrim(const text s, const text charset)
 	number	start;
 	number	end;
 
-	if (not s)
+	if (not (s and charset))
 		return (0);
 	start = 0;
 	end = ss_strlen(s);
 	while (ss_strchr(charset, s[start]))
 		start++;
-	while (ss_strrchr(charset, s[end - 1]))
+	while (ss_strchr(charset, s[end]))
 		end--;
-	return (ss_substr(s, start, end - start));
+	return (ss_substr(s, start, end - start + 1));
 }

@@ -12,10 +12,13 @@
 
 #include "ss_lib.h"
 
-void	ss_swap(generic a, generic b)
+void	_ss_swap(generic *a, generic *b)
 {
-	const generic	c = a;
+	generic	c;
 
-	a = b;
-	b = c;
+	if (not (a and b))
+		return ;
+	c = *a;
+	*a = *b;
+	*b = c;
 }

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #include "ss_lib.h"
 
-bool	ss_isascii(int c)
+bool	ss_isascii(number c)
 {
 	return ((c >= 0) and (c <= 127));
 }
