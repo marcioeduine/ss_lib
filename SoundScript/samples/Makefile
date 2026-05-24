@@ -6,7 +6,7 @@ HEADER = Sample.hpp
 OBJ = Sample.o sample_main.o
 BIN = sample_main
 
-WAVS = snare.wav kick.wav clap.wav hat.wav drum.wav
+WAVS = snare.wav kick.wav clap.wav hat.wav drum.wav open_hat.wav crash.wav rim.wav cowbell.wav conga.wav shaker.wav
 HEADERS = $(WAVS:.wav=.h)
 
 all: $(NAME)

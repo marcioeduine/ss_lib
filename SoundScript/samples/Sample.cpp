@@ -20,7 +20,7 @@ void	write_binary(std::ostream &file, const T &value)
 	file.write(reinterpret_cast<const char*>(&value), sizeof(T));
 }
 
-Sample::Sample(const std::string &_type) : type(_type), phase(0.0f), audio_buffer(NULL), number_of_frames(0)
+Sample::Sample(const std::string &_type, float _pitch_factor) : type(_type), phase(0.0f), audio_buffer(NULL), number_of_frames(0), pitch_factor(_pitch_factor)
 {
 	if (type == "hat")
 		number_of_frames = 0.1f * RATE;
@@ -32,8 +32,20 @@ Sample::Sample(const std::string &_type) : type(_type), phase(0.0f), audio_buffe
 		number_of_frames = 0.4f * RATE;
 	else if (type == "snare")
 		number_of_frames = 0.4f * RATE;
+	else if (type == "open_hat")
+		number_of_frames = 0.6f * RATE;
+	else if (type == "crash")
+		number_of_frames = 1.5f * RATE;
+	else if (type == "rim")
+		number_of_frames = 0.05f * RATE;
+	else if (type == "cowbell")
+		number_of_frames = 0.3f * RATE;
+	else if (type == "conga")
+		number_of_frames = 0.25f * RATE;
+	else if (type == "shaker")
+		number_of_frames = 0.15f * RATE;
 	else if (type == "beat")
-		number_of_frames = 4.0f * RATE;
+		number_of_frames = 64.0f * RATE;
 	if (number_of_frames > 0)
 	{
 		audio_buffer = new float[number_of_frames * 2];
@@ -50,6 +62,18 @@ Sample::Sample(const std::string &_type) : type(_type), phase(0.0f), audio_buffe
 			clap();
 		else if (type == "snare")
 			snare();
+		else if (type == "open_hat")
+			open_hat();
+		else if (type == "crash")
+			crash();
+		else if (type == "rim")
+			rim();
+		else if (type == "cowbell")
+			cowbell();
+		else if (type == "conga")
+			conga();
+		else if (type == "shaker")
+			shaker();
 	}
 }
 
@@ -65,6 +89,7 @@ Sample	&Sample::operator=(const Sample &object)
 		type = object.type;
 		phase = object.phase;
 		number_of_frames = object.number_of_frames;
+		pitch_factor = object.pitch_factor;
 		if (audio_buffer)
 			delete[] audio_buffer;
 		audio_buffer = NULL;
@@ -129,14 +154,15 @@ void	Sample::save(void)
 
 float	Sample::generate_white_noise(void)
 {
-	float	result(std::rand() / float(RAND_MAX));
+	double	max_rand(RAND_MAX);
+	float	result(std::rand() / max_rand);
 
 	return (result * 2.0f - 1.0f);
 }
 
 void	Sample::update_oscillator_phase(int frequency)
 {
-	const float	pi(std::acos(-1.0));
+	const float	pi(3.1415926535f);
 
 	phase += (2.0f * pi * frequency) / rate;
 	if (phase > 2.0f * pi)
@@ -166,14 +192,20 @@ float	Sample::calculate_time(int current_frame)
 
 void    Sample::hat(void)
 {
-	float	time;
-	float	envelope;
+	float	time(0.0f);
+	float	envelope(0.0f);
+	float	prev_noise(0.0f);
+	float	curr_noise(0.0f);
+	float	hp_noise(0.0f);
 
 	for (int frame(0); frame < number_of_frames; ++frame)
 	{
 		time = calculate_time(frame);
 		envelope = std::exp(-95.0f * time) * 0.3f;
-		write_stereo_channels(frame, generate_white_noise() * envelope, true);
+		curr_noise = generate_white_noise();
+		hp_noise = curr_noise - 0.85f * prev_noise;
+		prev_noise = curr_noise;
+		write_stereo_channels(frame, hp_noise * envelope, true);
 	}
 }
 
@@ -223,7 +255,7 @@ void	Sample::drum(void)
 	for (int frame(0); frame < number_of_frames; ++frame)
 	{
 		time = calculate_time(frame);
-		update_oscillator_phase(90.0f + 160.0f * std::exp(-25.0f * time));
+		update_oscillator_phase((90.0f + 160.0f * std::exp(-25.0f * time)) * pitch_factor);
 		signal = std::sin(phase) * std::exp(-7.0f * time) * 0.8f;
 		write_stereo_channels(frame, signal, true);
 	}
@@ -249,11 +281,10 @@ void	Sample::mix(const Sample &sample, int start_frame)
 {
 	float	*src(sample.get_audio_buffer());
 	int		frames(sample.get_number_of_frames());
-	int		i;
 	int		out_idx;
 	int		src_idx;
 
-	for (i = 0; i < frames; ++i)
+	for (int i(0); i < frames; ++i)
 	{
 		out_idx = (start_frame + i) * 2;
 		src_idx = i * 2;
@@ -262,6 +293,124 @@ void	Sample::mix(const Sample &sample, int start_frame)
 			audio_buffer[out_idx] += src[src_idx];
 			audio_buffer[out_idx + 1] += src[src_idx + 1];
 		}
+	}
+}
+
+void	Sample::open_hat(void)
+{
+	float	time(0.0f);
+	float	envelope(0.0f);
+	float	prev_noise(0.0f);
+	float	curr_noise(0.0f);
+	float	hp_noise(0.0f);
+
+	for (int frame(0); frame < number_of_frames; ++frame)
+	{
+		time = calculate_time(frame);
+		envelope = std::exp(-9.0f * time) * 0.3f;
+		curr_noise = generate_white_noise();
+		hp_noise = curr_noise - 0.85f * prev_noise;
+		prev_noise = curr_noise;
+		write_stereo_channels(frame, hp_noise * envelope, true);
+	}
+}
+
+void	Sample::crash(void)
+{
+	float	time(0.0f);
+	float	envelope(0.0f);
+	float	prev_noise(0.0f);
+	float	curr_noise(0.0f);
+	float	hp_noise(0.0f);
+
+	for (int frame(0); frame < number_of_frames; ++frame)
+	{
+		time = calculate_time(frame);
+		envelope = (std::exp(-2.0f * time) * 0.5f + std::exp(-150.0f * time) * 0.3f) * 0.6f;
+		curr_noise = generate_white_noise();
+		hp_noise = curr_noise - 0.85f * prev_noise;
+		prev_noise = curr_noise;
+		write_stereo_channels(frame, hp_noise * envelope, true);
+	}
+}
+
+void	Sample::rim(void)
+{
+	float	time(0.0f);
+	float	envelope(0.0f);
+	float	click_envelope(0.0f);
+	float	signal(0.0f);
+
+	phase = 0.0f;
+	for (int frame(0); frame < number_of_frames; ++frame)
+	{
+		time = calculate_time(frame);
+		update_oscillator_phase(1200);
+		envelope = std::exp(-150.0f * time) * 0.8f;
+		click_envelope = std::exp(-400.0f * time) * 0.2f;
+		signal = std::sin(phase) * envelope + generate_white_noise() * click_envelope;
+		write_stereo_channels(frame, signal, true);
+	}
+}
+
+void	Sample::cowbell(void)
+{
+	const float	pi(3.1415926535f);
+	float		time(0.0f);
+	float		sig1(0.0f);
+	float		sig2(0.0f);
+	float		signal(0.0f);
+	float		envelope(0.0f);
+
+	for (int frame(0); frame < number_of_frames; ++frame)
+	{
+		time = calculate_time(frame);
+		sig1 = std::sin(2.0f * pi * 540.0f * pitch_factor * time) >= 0.0f ? 1.0f : -1.0f;
+		sig2 = std::sin(2.0f * pi * 800.0f * pitch_factor * time) >= 0.0f ? 1.0f : -1.0f;
+		envelope = std::exp(-15.0f * time) * 0.5f;
+		signal = (0.5f * sig1 + 0.5f * sig2) * envelope;
+		write_stereo_channels(frame, signal, true);
+	}
+}
+
+void	Sample::conga(void)
+{
+	float	time(0.0f);
+	float	freq(0.0f);
+	float	signal(0.0f);
+	float	envelope(0.0f);
+
+	phase = 0.0f;
+	for (int frame(0); frame < number_of_frames; ++frame)
+	{
+		time = calculate_time(frame);
+		freq = (180.0f + 40.0f * std::exp(-25.0f * time)) * pitch_factor;
+		update_oscillator_phase(freq);
+		envelope = std::exp(-12.0f * time) * 0.6f;
+		signal = std::sin(phase) * envelope;
+		write_stereo_channels(frame, signal, true);
+	}
+}
+
+void	Sample::shaker(void)
+{
+	float	time(0.0f);
+	float	envelope(0.0f);
+	float	prev_noise(0.0f);
+	float	curr_noise(0.0f);
+	float	hp_noise(0.0f);
+
+	for (int frame(0); frame < number_of_frames; ++frame)
+	{
+		time = calculate_time(frame);
+		if (time < 0.02f)
+			envelope = (time / 0.02f) * 0.4f;
+		else
+			envelope = std::exp(-35.0f * (time - 0.02f)) * 0.4f;
+		curr_noise = generate_white_noise();
+		hp_noise = curr_noise - 0.85f * prev_noise;
+		prev_noise = curr_noise;
+		write_stereo_channels(frame, hp_noise * envelope, true);
 	}
 }
 
