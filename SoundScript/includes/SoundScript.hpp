@@ -14,10 +14,11 @@
 # define SOUND_SCRIPT_HPP
 
 # include <cstdlib>
+# include <string>
 # include "miniaudio.h"
 
 typedef std::string t_text;
 
-void	ss_error(const &t_text, int fd = 1);
+void	ss_error(const t_text &msg, int fd = 1);
 
 #endif

@@ -1,4 +1,4 @@
-#include "Sample.hpp"
+#include "../includes/Sample.hpp"
 
 int main(void)
 {
@@ -29,6 +29,21 @@ int main(void)
 		Sample	bass_bb2("drum", 1.2949f);
 		Sample	bass_c3("drum", 1.4534f);
 
+		// Chromatic Piano Notes
+		Sample	piano_c4("piano_c4");
+		Sample	piano_cs4("piano_cs4");
+		Sample	piano_d4("piano_d4");
+		Sample	piano_ds4("piano_ds4");
+		Sample	piano_e4("piano_e4");
+		Sample	piano_f4("piano_f4");
+		Sample	piano_fs4("piano_fs4");
+		Sample	piano_g4("piano_g4");
+		Sample	piano_gs4("piano_gs4");
+		Sample	piano_a4("piano_a4");
+		Sample	piano_as4("piano_as4");
+		Sample	piano_b4("piano_b4");
+		Sample	piano_c5("piano_c5");
+
 		int		step_frames(11200);
 		int		bar(0);
 		int		step(0);
@@ -46,6 +61,21 @@ int main(void)
 		shaker.save();
 		conga.save();
 		cb_c5.save(); // Saves cowbell.wav (base pitch 1.0f)
+
+		// Save piano notes
+		piano_c4.save();
+		piano_cs4.save();
+		piano_d4.save();
+		piano_ds4.save();
+		piano_e4.save();
+		piano_f4.save();
+		piano_fs4.save();
+		piano_g4.save();
+		piano_gs4.save();
+		piano_a4.save();
+		piano_as4.save();
+		piano_b4.save();
+		piano_c5.save();
 
 		// Loop through all 16 bars (0 to 15)
 		for (bar = 0; bar < 16; ++bar)
