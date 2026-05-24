@@ -47,6 +47,7 @@ class	Sample
 		void	snare(void);
 		void	clap(void);
 		void	save(void);
+		void	mix(const Sample &sample, int start_frame);
 		float	*get_audio_buffer(void) const { return (audio_buffer); }
 		int		get_number_of_frames(void) const { return (number_of_frames); }
 };

@@ -32,6 +32,8 @@ Sample::Sample(const std::string &_type) : type(_type), phase(0.0f), audio_buffe
 		number_of_frames = 0.4f * RATE;
 	else if (type == "snare")
 		number_of_frames = 0.4f * RATE;
+	else if (type == "beat")
+		number_of_frames = 4.0f * RATE;
 	if (number_of_frames > 0)
 	{
 		audio_buffer = new float[number_of_frames * 2];
@@ -242,3 +244,24 @@ void	Sample::snare(void)
 		write_stereo_channels(frame, signal[0] + generate_white_noise() * signal[1], true);
 	}
 }
+
+void	Sample::mix(const Sample &sample, int start_frame)
+{
+	float	*src(sample.get_audio_buffer());
+	int		frames(sample.get_number_of_frames());
+	int		i;
+	int		out_idx;
+	int		src_idx;
+
+	for (i = 0; i < frames; ++i)
+	{
+		out_idx = (start_frame + i) * 2;
+		src_idx = i * 2;
+		if (out_idx + 1 < number_of_frames * 2)
+		{
+			audio_buffer[out_idx] += src[src_idx];
+			audio_buffer[out_idx + 1] += src[src_idx + 1];
+		}
+	}
+}
+
