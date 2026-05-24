@@ -46,7 +46,7 @@ Sample::Sample(const std::string &_type, float _pitch_factor) : type(_type), pha
 		number_of_frames = 0.15f * RATE;
 	else if (type.size() >= 6 && type.compare(0, 6, "piano_") == 0)
 		number_of_frames = 1.0f * RATE;
-	else if (type == "beat")
+	else if (type == "beat" || type == "rap_drill")
 		number_of_frames = 64.0f * RATE;
 	if (number_of_frames > 0)
 	{
