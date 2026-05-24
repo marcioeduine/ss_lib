@@ -14,7 +14,6 @@ NAME		= ss_lib.a
 CXX			= c++
 CXXFLAGS	= -Wall -Wextra -Werror -std=c++98
 HEADER		= includes/SoundScript.hpp includes/miniaudio.h
-SAMPLE		= includes/kick.h includes/drum.h includes/hat.h includes/clap.h
 OBJ			= srcs/SoundScript.o srcs/utilities.o
 
 all: $(NAME)
@@ -22,7 +21,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@ar rcs $(NAME) $(OBJ)
 
-$(OBJ): $(HEADER) $(SAMPLE)
+$(OBJ): $(HEADER)
 
 clean:
 	@rm -f $(OBJ)

@@ -13,12 +13,13 @@
 #ifndef SAMPLE_HPP
 # define SAMPLE_HPP
 
-# define ERROR_ALLOC "[ SAMPLE ERROR ] Audio buffer allocation!"
+# define ERROR_ALLOC "Bad Audio Buffer allocation!"
 # define RATE 44800
 
 # include <cmath>
 # include <cstdlib>
 # include <fstream>
+# include <iostream>
 
 class	Sample
 {
@@ -36,14 +37,14 @@ class	Sample
 	public:
 		Sample(const std::string &_type);
 		Sample(const Sample &object);
-		Sample	&operator==(const Sample &object);
+		Sample	&operator=(const Sample &object);
 		~Sample(void);
 		void	hat(void);
 		void	kick(void);
 		void	drum(void);
 		void	snare(void);
 		void	clap(void);
-		void	save(const char *filename);
-}
+		void	save(void);
+};
 
 #endif
