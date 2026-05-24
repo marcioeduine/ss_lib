@@ -16,6 +16,8 @@
 # define ERROR_ALLOC "Bad Audio Buffer allocation!"
 # define RATE 44800
 
+# include <algorithm>
+# include <climits>
 # include <cmath>
 # include <cstdlib>
 # include <fstream>
@@ -45,6 +47,8 @@ class	Sample
 		void	snare(void);
 		void	clap(void);
 		void	save(void);
+		float	*get_audio_buffer(void) const { return (audio_buffer); }
+		int		get_number_of_frames(void) const { return (number_of_frames); }
 };
 
 #endif

@@ -12,7 +12,15 @@
 
 #include "Sample.hpp"
 
-Sample::Sample(const std::string &_type) : type(_type), phase(0.0f)
+const float rate(RATE);
+
+template <typename T>
+void	write_binary(std::ostream &file, const T &value)
+{
+	file.write(reinterpret_cast<const char*>(&value), sizeof(T));
+}
+
+Sample::Sample(const std::string &_type) : type(_type), phase(0.0f), audio_buffer(NULL), number_of_frames(0)
 {
 	if (type == "hat")
 		number_of_frames = 0.1f * RATE;
@@ -24,12 +32,26 @@ Sample::Sample(const std::string &_type) : type(_type), phase(0.0f)
 		number_of_frames = 0.4f * RATE;
 	else if (type == "snare")
 		number_of_frames = 0.4f * RATE;
-	audio_buffer = new float[number_of_frames * 2];
-	if (not audio_buffer)
-		throw (std::runtime_error(ERROR_ALLOC));
+	if (number_of_frames > 0)
+	{
+		audio_buffer = new float[number_of_frames * 2];
+		if (not audio_buffer)
+			throw (std::runtime_error(ERROR_ALLOC));
+		std::fill(audio_buffer, audio_buffer + number_of_frames * 2, 0.0f);
+		if (type == "hat")
+			hat();
+		else if (type == "kick")
+			kick();
+		else if (type == "drum")
+			drum();
+		else if (type == "clap")
+			clap();
+		else if (type == "snare")
+			snare();
+	}
 }
 
-Sample::Sample(const Sample &object)
+Sample::Sample(const Sample &object) : audio_buffer(NULL)
 {
 	*this = object;
 }
@@ -39,12 +61,18 @@ Sample	&Sample::operator=(const Sample &object)
 	if (this != &object)
 	{
 		type = object.type;
+		phase = object.phase;
 		number_of_frames = object.number_of_frames;
 		if (audio_buffer)
 			delete[] audio_buffer;
-		audio_buffer = new float[number_of_frames * 2];
-		if (not audio_buffer)
-			throw (std::runtime_error(ERROR_ALLOC));
+		audio_buffer = NULL;
+		if (number_of_frames > 0)
+		{
+			audio_buffer = new float[number_of_frames * 2];
+			if (not audio_buffer)
+				throw (std::runtime_error(ERROR_ALLOC));
+			std::copy(object.audio_buffer, object.audio_buffer + number_of_frames * 2, audio_buffer);
+		}
 	}
 	return (*this);
 }
@@ -57,51 +85,50 @@ Sample::~Sample(void)
 void	Sample::save(void)
 {
 	std::ofstream	file(std::string(type + ".wav").c_str(), std::ios::binary);
-	int				sub_chunk_1_size(32);
-	int				sub_chunk_2_size(number_of_frames * 2);
+	int				sub_chunk_1_size(16);
+	int				sub_chunk_2_size(number_of_frames * 2 * 4);
 	int				chunk_size(36 + sub_chunk_2_size);
 	short			audio_format(1);
 	short			num_channels(2);
-	int				byte_rate(RATE * num_channels * 2);
+	int				byte_rate(RATE * num_channels * 4);
 	int				sample_rate(RATE);
-	short 			block_align(num_channels * 2);
+	short 			block_align(num_channels * 4);
 	short 			bits_per_sample(32);
-	short 			pcm_sample;
-	float 			sample;
+	int 			pcm_sample;
+	double 			sample;
 
 	if (not file.is_open())
 		return ;
 	file.write("RIFF", 4);
-	file.write(reinterpret_cast<char*>(&chunk_size), 4);
+	write_binary(file, chunk_size);
 	file.write("WAVE", 4);
 	file.write("fmt ", 4);
-	file.write(reinterpret_cast<char*>(&sub_chunk_1_size), 4);
-	file.write(reinterpret_cast<char*>(&audio_format), 2);
-	file.write(reinterpret_cast<char*>(&num_channels), 2);
-	file.write(reinterpret_cast<char*>(&sample_rate), 4);
-	file.write(reinterpret_cast<char*>(&byte_rate), 4);
-	file.write(reinterpret_cast<char*>(&block_align), 2);
-	file.write(reinterpret_cast<char*>(&bits_per_sample), 2);
+	write_binary(file, sub_chunk_1_size);
+	write_binary(file, audio_format);
+	write_binary(file, num_channels);
+	write_binary(file, sample_rate);
+	write_binary(file, byte_rate);
+	write_binary(file, block_align);
+	write_binary(file, bits_per_sample);
 	file.write("data", 4);
-	file.write(reinterpret_cast<char*>(&sub_chunk_2_size), 4);
-	for (int i(0); i < number_of_frames; ++i)
+	write_binary(file, sub_chunk_2_size);
+	for (int i(0); i < number_of_frames * 2; ++i)
 	{
 		sample = audio_buffer[i];
 		if (sample > 1.0f)
 			sample = 1.0f;
 		if (sample < -1.0f)
 			sample = -1.0f;
-		pcm_sample = static_cast<short>(sample * 32767.0f);
-		file.write(reinterpret_cast<char*>(&pcm_sample), 2);
+		pcm_sample = sample * INT_MAX;
+		write_binary(file, pcm_sample);
 	}
 	file.close();
 }
 
 float	Sample::generate_white_noise(void)
 {
-	float	result;
+	float	result(std::rand() / float(RAND_MAX));
 
-	result = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 	return (result * 2.0f - 1.0f);
 }
 
@@ -109,7 +136,7 @@ void	Sample::update_oscillator_phase(int frequency)
 {
 	const float	pi(std::acos(-1.0));
 
-	phase += (2.0f * pi * frequency) / static_cast<float>(RATE);
+	phase += (2.0f * pi * frequency) / rate;
 	if (phase > 2.0f * pi)
 		phase -= 2.0f * pi;
 }
@@ -117,33 +144,42 @@ void	Sample::update_oscillator_phase(int frequency)
 void	Sample::write_stereo_channels(int &frame, float value, bool flag)
 {
 	const int	channel[2] = {frame * 2, frame * 2 + 1};
-	float		amplitude_envelope(std::exp(value));
+	float		amplitude_envelope;
 
 	if (flag)
 	{
-		audio_buffer[channel[0]] = amplitude_envelope;
-		audio_buffer[channel[1]] = amplitude_envelope;
+		audio_buffer[channel[0]] = value;
+		audio_buffer[channel[1]] = value;
 		return ;
 	}
+	amplitude_envelope = std::exp(value);
 	audio_buffer[channel[0]] = generate_white_noise() * amplitude_envelope;
 	audio_buffer[channel[1]] = generate_white_noise() * amplitude_envelope;
 }
 
 float	Sample::calculate_time(int current_frame)
 {
-	return (static_cast<float>(current_frame) / static_cast<float>(RATE));
+	return (current_frame / rate);
 }
 
 void    Sample::hat(void)
 {
+	float	time;
+	float	envelope;
+
 	for (int frame(0); frame < number_of_frames; ++frame)
-		write_stereo_channels(frame, -95.0f * calculate_time(frame) * 0.3f);
+	{
+		time = calculate_time(frame);
+		envelope = std::exp(-95.0f * time) * 0.3f;
+		write_stereo_channels(frame, generate_white_noise() * envelope, true);
+	}
 }
 
 void	Sample::clap(void)
 {
 	float	time;
 	float	signal;
+	float	envelope;
 
 	for (int frame(0); frame < number_of_frames; ++frame)
 	{
@@ -156,7 +192,8 @@ void	Sample::clap(void)
 			signal = -180.0f * (time - 0.022f);
 		else
 			signal = -14.0f * (time - 0.033f);
-		write_stereo_channels(frame, signal * 0.4f);
+		envelope = std::exp(signal) * 0.4f;
+		write_stereo_channels(frame, generate_white_noise() * envelope, true);
 	}
 }
 
@@ -202,6 +239,6 @@ void	Sample::snare(void)
 		update_oscillator_phase(180.0f);
 		signal[0] = std::sin(phase) * std::exp(-35.0f * time) * 0.4f;
 		signal[1] = std::exp(-15.0f * time);
-		write_stereo_channels(frame, signal[0] + signal[1]);
+		write_stereo_channels(frame, signal[0] + generate_white_noise() * signal[1], true);
 	}
 }
